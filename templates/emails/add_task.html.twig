@@ -1,0 +1,13 @@
+<h3>Pojawiło się nowe zadanie!</h3>
+<h2>
+    <br />
+    Tytuł: {{ task.title }}
+    <br />
+    Treść: {{ task.description }}
+    <br />
+    Dodane przez: {{ task.addedBy.profileName }}
+    <br />
+    Priorytet: {{ task.priority }}
+</h2>
+<br /><br/>
+<a href="{{ url('tasks_list') }}">Przejdź na stronę główną</a>

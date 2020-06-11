@@ -1,0 +1,8 @@
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle profile-image" data-toggle="dropdown">
+        <img src="{{ app.user.avatar }}" class="img-circle special-img" width="50px" height="50px"> <button type="button" class="btn btn-primary btn-sm">{{ app.user.profileName }}</button> <b class="caret"></b></a>
+    <ul class="dropdown-menu" style="padding: 5px;">
+        <li><a href="{{ url('user_setmail') }}"><i class="fa fa-cog"></i> <button type="button" class="btn btn-success btn-sm">Zmień Email</button></a></li><br />
+        <li><a href="{{ url('app_logout') }}"><i class="fa fa-cog"></i> <button type="button" class="btn btn-success btn-sm">Wyloguj się</button></a></li>
+    </ul>
+</li>

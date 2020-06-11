@@ -1,0 +1,17 @@
+security:
+  providers:
+    steam_user_provider:
+      id: Knojector\SteamAuthenticationBundle\Security\User\SteamUserProvider
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      anonymous: true
+      pattern: ^/
+      provider: steam_user_provider
+      steam: true
+      form_login:
+        provider: steam_user_provider
+      logout:
+        path:   app_logout

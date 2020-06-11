@@ -1,0 +1,7 @@
+<h3>W twoim zadaniu {{ task.title }} pojawił się nowy komentarz:</h3>
+<h2>
+    <br />
+    {{ comment.description }}
+</h2>
+<br /><br/>
+<a href="{{ url('show_task', {"id" : task.id}) }}">Przejdź do zadania</a>

@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Obecne zadania</h1>
+    {% for task in tasks_active %}
+            <div class="card border-primary" >
+                <div class="card-header {{ panelStyle(task) }}">
+                    <a href="{{ url('show_task', {"id" : task.id}) }}">{{ task.title }}</a> | Dodane przez <span class="badge badge-light">{{ task.addedBy.profileName }}</span><span class="badge badge-info">{{ task.createdAt | date("Y-m-d H:i:s") }}</span>
+                    <h5>
+                        <span class="badge badge-danger">{{ task.status }}</span>
+                        <span class="badge badge-success">Priorytet: {{ task.priority }}</span>
+                        <span class="badge badge-success">Deadline: {{ task.deadline | date("Y-m-d H:i:s") }}</span>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="dropdown d-inline float-right">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Opcje
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% if task.takenBy is empty %}
+                                        <a href="{{ url("take_task", {"id" : task.id}) }}" class="dropdown-item">Podejmij działanie</a>
+                                    {% endif %}
+                                    {% if task.status != 'Działania zakończone' %}
+                                        <a href="{{ url("end_task", {"id" : task.id}) }}" class="dropdown-item">Zakończ</a>
+                                    {% endif %}
+                                    <a href="{{ url("delete_task", {"id" : task.id}) }}" class="dropdown-item">Usuń</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </h5>
+
+                </div>
+                <div class="card-body">
+                    {% if task.takenBy is empty %}
+                        <h5 class="card-title">Zadanie podjęte przez: <i>brak</i></h5>
+                    {% else %}
+                        <h5 class="card-title">Zadanie podjęte przez: <i>{{ task.takenBy.profileName }}</i></h5>
+                    {% endif %}
+                    <p class="card-text">{{ task.description }}</p>
+                </div>
+                <div class="card-footer">
+                    Komentarze:
+                    <div class="float-right">
+                        {% if is_granted('ROLE_ADMIN') or task.addedBy == app.user %}
+                            <a href="{{ url("comment_add", {"task" : task.id, "user" : app.user.id}) }}" class="btn btn-primary">Dodaj komentarz</a>
+                        {% endif %}
+                    </div>
+                    <br />
+                    {% for comment in getCollection(task) %}
+                        {{ comment.description }} //Dodane przez: <b>{{ comment.user.profileName }}</b><i>  ({{ comment.updatedAt | date("Y-m-d H:i:s") }})</i><br />
+                    {% endfor %}
+                </div>
+            </div>
+        <br />
+    {% else %}
+        <hr />
+        <div class="panel panel-warning">
+            <div class="panel-body">
+                <h3>Obecnie nie ma żadnych zadań do wykonania.</h3>
+            </div>
+        </div>
+    {% endfor %}
+    <br /><br />
+    <h1>Ukończone zadania</h1>
+    {% for task in tasks_ended %}
+            <div class="card border-success">
+                <div class="card-header">
+                    <a href="{{ url('show_task', {"id" : task.id}) }}">{{ task.title }}</a> | Dodane przez <span class="badge badge-light">{{ task.addedBy.profileName }}</span><span class="badge badge-info">{{ task.createdAt | date("Y-m-d H:i:s") }}</span>
+                    <h5>
+                        <span class="badge badge-danger">{{ task.status }}</span>
+                        <span class="badge badge-success">Priorytet: {{ task.priority }}</span>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="dropdown d-inline float-right">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Opcje
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a href="{{ url("back_task", {"id" : task.id}) }}" class="dropdown-item">Przywróć do aktywnych</a>
+                                    <a href="{{ url("delete_task", {"id" : task.id}) }}" class="dropdown-item">Usuń</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+
+                    {% if task.takenBy is empty %}
+                        <h5 class="card-title">Zadanie podjęte przez: <i>brak</i></h5>
+                    {% else %}
+                        <h5 class="card-title">Zadanie podjęte przez: <i>{{ task.takenBy.profileName }}</i></h5>
+                    {% endif %}
+                    <p class="card-text">{{ task.description }}</p>
+
+                </div>
+                <div class="card-footer">
+
+                    Komentarze:
+                    <div class="float-right">
+                        {% if is_granted('ROLE_ADMIN') or task.addedBy == app.user %}
+                            <a href="{{ url("comment_add", {"task" : task.id, "user" : app.user.id}) }}" class="btn btn-primary">Dodaj komentarz</a>
+                        {% endif %}
+                    </div>
+                    <br />
+                    {% for comment in getCollection(task) %}
+                        {{ comment.description }} //Dodane przez: <b>{{ comment.user.profileName }}</b><i>  ({{ comment.updatedAt | date("Y-m-d H:i:s") }})</i><br />
+                    {% endfor %}
+                </div>
+            </div>
+        <br />
+    {% else %}
+        <hr />
+        <div class="panel panel-warning">
+            <div class="panel-body">
+                <h3>Nie ma ukończonych zadań.</h3>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
